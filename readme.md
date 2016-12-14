@@ -6,7 +6,7 @@ Localist allows manually importing a CSV of locations. This generator get's loca
 
 1. Save [config_example.py](config_example.py) as config.py and modify the contents as appropriate.
 2. Build the Docker image
-    docker build -t localist-csv .
+`docker build -t localist-csv .`
 3. Run the Docker image
-    docker run --rm -v /path/to/localist-locations-csv/:/usr/src/app/ localist-csv
+`docker run --rm -v /path/to/localist-locations-csv/:/usr/src/app/ localist-csv`
 4. A csv will appear in /path/to/localist-locations-csv/
