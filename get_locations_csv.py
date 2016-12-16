@@ -27,9 +27,11 @@ def get_locations(access_token):
 
     return locations_request.json()
 
+# Get access token and locations JSON
 access_token = get_access_token()
 locations_response = get_locations(access_token)
 
+# Initialize a CSV with the needed fields
 try:
     locations_csv = csv.writer(open("osu-corvallis-locations-" + time.strftime("%m-%d-%Y") + ".csv", "w"))
     locations_csv.writerow(['Name', 'Description', 
