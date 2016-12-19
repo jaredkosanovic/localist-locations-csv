@@ -33,7 +33,7 @@ locations_response = get_locations(access_token)
 
 # Initialize a CSV with the needed fields
 try:
-    locations_csv = csv.writer(open("osu-corvallis-locations-" + time.strftime("%m-%d-%Y") + ".csv", "w"))
+    locations_csv = csv.writer(open("osu-corvallis-locations.csv", "w"))
     locations_csv.writerow(['Name', 'Description', 
         'Type', 'URL', 'Address', 'City', 'State', 
         'Photo URL', 'Longitude', 'Latitude'])
@@ -43,14 +43,14 @@ except IOError:
 
 for location in locations_response['data']:
     attributes = location['attributes']
-    print attributes
+    
     # Strip summary text of HTML tags
     if attributes['summary'] is not None:
         summary = re.sub("<.*?>", "", attributes['summary'].encode('utf-8').strip())
     else:
         summary = None
-    print summary
-    # Images are nicer than thumbnails.  
+    
+    # Images are nicer than thumbnails  
     if attributes['images']:
         image = attributes['images'][0] 
     elif attributes['thumbnails']:
