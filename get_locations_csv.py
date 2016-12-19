@@ -32,14 +32,10 @@ access_token = get_access_token()
 locations_response = get_locations(access_token)
 
 # Initialize a CSV with the needed fields
-try:
-    locations_csv = csv.writer(open("osu-corvallis-locations.csv", "w"))
-    locations_csv.writerow(['Name', 'Description', 
-        'Type', 'URL', 'Address', 'City', 'State', 
-        'Photo URL', 'Longitude', 'Latitude'])
-except IOError:
-    print "Cannot write to a CSV file"
-    sys.exit(1)    
+locations_csv = csv.writer(open("osu-corvallis-locations.csv", "w"))
+locations_csv.writerow(['Name', 'Description', 
+    'Type', 'URL', 'Address', 'City', 'State', 
+    'Photo URL', 'Longitude', 'Latitude'])
 
 for location in locations_response['data']:
     attributes = location['attributes']
