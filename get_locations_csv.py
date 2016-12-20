@@ -43,6 +43,7 @@ except IOError:
 
 for location in locations_response['data']:
     attributes = location['attributes']
+    
     # Strip summary text of HTML tags
     if attributes['summary'] is not None:
         summary = re.sub("<.*?>", "", attributes['summary'].encode('utf-8').strip())
