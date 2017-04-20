@@ -2,11 +2,10 @@ import json, requests, ssl, csv, re, time, sys
 from config import *
 
 def get_access_token():
-    access_token_url = locations_url + "/token"
     post_data = {'client_id': client_id, 
         'client_secret': client_secret, 
         'grant_type': 'client_credentials'}
-    token_request = requests.post(access_token_url, data=post_data)
+    token_request = requests.post(token_api, data=post_data)
 
     if token_request.status_code != 200:
         print "Token request failed."
