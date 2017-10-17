@@ -31,7 +31,7 @@ access_token = get_access_token()
 
 for campus in campuses:
     print "------------------------------------------------------"
-    print "Processing %s" % campus
+    print "Campus: %s" % campus
     locations_response = get_locations(access_token, campus)
 
     # Initialize a CSV with the needed fields
