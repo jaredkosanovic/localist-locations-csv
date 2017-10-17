@@ -15,9 +15,9 @@ def get_access_token():
 
     return 'Bearer ' + token_response["access_token"]
 
-def get_locations(access_token):
+def get_locations(access_token, campus):
     headers = {'Authorization': access_token}
-    query_params = {'campus': 'corvallis', 'type':'building', 'page[size]': 9999}
+    query_params = {'campus': campus, 'type':'building', 'page[size]': 9999}
     locations_request = requests.get(locations_url, headers=headers, params=query_params)
     
     if locations_request.status_code != 200:
@@ -26,45 +26,51 @@ def get_locations(access_token):
 
     return locations_request.json()
 
-# Get access token and locations JSON
+# Get access token
 access_token = get_access_token()
-locations_response = get_locations(access_token)
 
-# Initialize a CSV with the needed fields
-try:
-    locations_csv = csv.writer(open("osu-corvallis-locations.csv", "w"))
-    locations_csv.writerow(['Name', 'Description', 
-        'Type', 'URL', 'Address', 'City', 'State', 
-        'Photo URL', 'Longitude', 'Latitude'])
-except IOError:
-    print "Cannot write to a CSV file"
-    sys.exit(1)    
+for campus in campuses:
+    print "------------------------------------------------------"
+    print "Processing %s" % campus
+    locations_response = get_locations(access_token, campus)
 
-for location in locations_response['data']:
-    attributes = location['attributes']
-    
-    # Strip summary text of HTML tags
-    if attributes['summary'] is not None:
-        summary = re.sub("<.*?>", "", attributes['summary'].encode('utf-8').strip())
-    else:
-        summary = None
-    
-    # Images are nicer than thumbnails  
-    if attributes['images']:
-        image = attributes['images'][0] 
-    elif attributes['thumbnails']:
-        image = attributes['thumbnails'][0]
-    else:
-        image = None
+    # Initialize a CSV with the needed fields
+    try:
+        locations_csv = csv.writer(open("osu-%s-locations.csv" % campus, "w"))
+        locations_csv.writerow(['Name', 'Description',
+            'Type', 'URL', 'Address', 'City', 'State', 'Zip',
+            'Photo URL', 'Longitude', 'Latitude'])
+    except IOError:
+        print "Cannot write to a CSV file"
+        sys.exit(1)
 
-    locations_csv.writerow([
-        attributes['name'],
-        summary,
-        attributes['type'],
-        attributes['website'],
-        attributes['address'],
-        attributes['city'],
-        attributes['state'],
-        image,
-        attributes['longitude'],
-        attributes['latitude']])
+    for location in locations_response['data']:
+        attributes = location['attributes']
+        print "Processing " + attributes['name']
+
+        # Strip description text of HTML tags
+        if attributes['description'] is not None:
+            description = re.sub("<.*?>", "", attributes['description'].encode('utf-8').strip())
+        else:
+            description = None
+
+        # Images are nicer than thumbnails
+        if attributes['images']:
+            image = attributes['images'][0]
+        elif attributes['thumbnails']:
+            image = attributes['thumbnails'][0]
+        else:
+            image = None
+
+        locations_csv.writerow([
+            attributes['name'],
+            description,
+            attributes['type'],
+            attributes['website'],
+            attributes['address'],
+            attributes['city'],
+            attributes['state'],
+            attributes['zip'],
+            image,
+            attributes['longitude'],
+            attributes['latitude']])
