@@ -26,6 +26,14 @@ def get_locations(access_token, campus):
 
     return locations_request.json()
 
+def is_valid_name(name):
+    invalid_names = ['shed', '-', 'storage', 'feed']
+
+    for invalid_name in invalid_names:
+        if invalid_name in name.lower():
+            return False
+    return True
+
 # Get access token
 access_token = get_access_token()
 
@@ -46,31 +54,35 @@ for campus in campuses:
 
     for location in locations_response['data']:
         attributes = location['attributes']
-        print "Processing " + attributes['name']
+        name = attributes['name']
+        print "Processing " + name
+        
+        if (is_valid_name(name)):
+            # Strip description text of HTML tags
+            if attributes['description'] is not None:
+                description = re.sub("<.*?>", "", attributes['description'].encode('utf-8').strip())
+            else:
+                description = None
 
-        # Strip description text of HTML tags
-        if attributes['description'] is not None:
-            description = re.sub("<.*?>", "", attributes['description'].encode('utf-8').strip())
+            # Images are nicer than thumbnails
+            if attributes['images']:
+                image = attributes['images'][0]
+            elif attributes['thumbnails']:
+                image = attributes['thumbnails'][0]
+            else:
+                image = None
+
+            locations_csv.writerow([
+                name,
+                description,
+                attributes['type'],
+                attributes['website'],
+                attributes['address'],
+                attributes['city'],
+                attributes['state'],
+                attributes['zip'],
+                image,
+                attributes['longitude'],
+                attributes['latitude']])
         else:
-            description = None
-
-        # Images are nicer than thumbnails
-        if attributes['images']:
-            image = attributes['images'][0]
-        elif attributes['thumbnails']:
-            image = attributes['thumbnails'][0]
-        else:
-            image = None
-
-        locations_csv.writerow([
-            attributes['name'],
-            description,
-            attributes['type'],
-            attributes['website'],
-            attributes['address'],
-            attributes['city'],
-            attributes['state'],
-            attributes['zip'],
-            image,
-            attributes['longitude'],
-            attributes['latitude']])
+            print name + " was not added because it contains something invalid."
