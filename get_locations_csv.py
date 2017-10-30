@@ -1,4 +1,4 @@
-import json, requests, ssl, csv, re, time, sys
+import json, requests, ssl, csv, re, time, sys, pprint
 from config import *
 
 def get_access_token():
@@ -36,6 +36,7 @@ def is_valid_name(name):
 
 # Get access token
 access_token = get_access_token()
+ignored_buildings = []
 
 for campus in campuses:
     print "------------------------------------------------------"
@@ -85,4 +86,8 @@ for campus in campuses:
                 attributes['longitude'],
                 attributes['latitude']])
         else:
-            print name + " was not added because it contains something invalid."
+            ignored_buildings.append(name)
+
+pp = pprint.PrettyPrinter(indent=4)
+print "These buildings were ignored:"
+pp.pprint(ignored_buildings)
