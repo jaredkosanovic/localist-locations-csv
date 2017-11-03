@@ -27,7 +27,7 @@ def get_locations(access_token, campus):
     return locations_request.json()
 
 def is_valid_name(name):
-    invalid_names = ['shed', '-', 'storage', 'feed']
+    invalid_names = ['garage', 'shed', '-', 'storage', 'feed']
 
     for invalid_name in invalid_names:
         if invalid_name in name.lower():
@@ -88,6 +88,5 @@ for campus in campuses:
         else:
             ignored_buildings.append(name)
 
-pp = pprint.PrettyPrinter(indent=4)
 print "These buildings were ignored:"
-pp.pprint(ignored_buildings)
+print '%s' % ', '.join(map(str, ignored_buildings))
