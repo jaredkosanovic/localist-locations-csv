@@ -1,5 +1,8 @@
-import json, requests, ssl, csv, re, time, sys, pprint
-from config import *
+import requests
+import csv
+import re
+import sys
+from config import locations_url, token_api, client_id, client_secret
 
 def get_access_token():
     post_data = {'client_id': client_id,
@@ -36,6 +39,7 @@ def is_valid_name(name):
 
 # Get access token
 access_token = get_access_token()
+campuses = ['corvallis', 'cascades', 'hmsc', 'other']
 ignored_buildings = []
 
 for campus in campuses:
