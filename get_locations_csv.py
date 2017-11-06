@@ -20,7 +20,7 @@ def get_access_token():
 
 def get_locations(access_token, campus):
     headers = {'Authorization': access_token}
-    query_params = {'campus': campus, 'type':'building', 'page[size]': 9999}
+    query_params = {'campus': campus, 'type': 'building', 'page[size]': 9999}
     locations_request = requests.get(locations_url, headers=headers, params=query_params)
 
     if locations_request.status_code != 200:
@@ -62,9 +62,9 @@ for campus in campuses:
         name = attributes['name']
         print "Processing " + name
 
-        if (is_valid_name(name)):
+        if is_valid_name(name):
             # Strip description text of HTML tags
-            if attributes['description'] is not None:
+            if attributes['description']:
                 description = re.sub("<.*?>", "", attributes['description'].encode('utf-8').strip())
             else:
                 description = None
