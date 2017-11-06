@@ -2,8 +2,8 @@ import json, requests, ssl, csv, re, time, sys, pprint
 from config import *
 
 def get_access_token():
-    post_data = {'client_id': client_id, 
-        'client_secret': client_secret, 
+    post_data = {'client_id': client_id,
+        'client_secret': client_secret,
         'grant_type': 'client_credentials'}
     token_request = requests.post(token_api, data=post_data)
 
@@ -19,7 +19,7 @@ def get_locations(access_token, campus):
     headers = {'Authorization': access_token}
     query_params = {'campus': campus, 'type':'building', 'page[size]': 9999}
     locations_request = requests.get(locations_url, headers=headers, params=query_params)
-    
+
     if locations_request.status_code != 200:
         print "Locations request failed."
         sys.exit(1)
@@ -57,7 +57,7 @@ for campus in campuses:
         attributes = location['attributes']
         name = attributes['name']
         print "Processing " + name
-        
+
         if (is_valid_name(name)):
             # Strip description text of HTML tags
             if attributes['description'] is not None:
